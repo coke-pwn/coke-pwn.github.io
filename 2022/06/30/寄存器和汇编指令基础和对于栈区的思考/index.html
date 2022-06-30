@@ -1,0 +1,490 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>寄存器和汇编指令基础 | coke_blog</title><meta name="keywords" content="计算机原理"><meta name="author" content="coke_pwn"><meta name="copyright" content="coke_pwn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="寄存器和汇编指令基础0X1寄存器  通用寄存器   AX，BX，CX，DX AX是累积寄存器，相对于其他寄存器，在运算方面比较常用，是很多加法乘法指令的缺省寄存器。 BX是基地暂存器，作为内存偏移指针使用，在内存寻址时存放基地址。 CX是计数暂存器，是重复（REP）前缀指令和LOOP指令的内定寄存器。 DX是资料暂存器，用来放整数除法产生的余数。  IP，SP，BP, IP是存储CPU下次所执行的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="寄存器和汇编指令基础">
+<meta property="og:url" content="http://example.com/2022/06/30/%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80%E5%92%8C%E5%AF%B9%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%80%9D%E8%80%83/index.html">
+<meta property="og:site_name" content="coke_blog">
+<meta property="og:description" content="寄存器和汇编指令基础0X1寄存器  通用寄存器   AX，BX，CX，DX AX是累积寄存器，相对于其他寄存器，在运算方面比较常用，是很多加法乘法指令的缺省寄存器。 BX是基地暂存器，作为内存偏移指针使用，在内存寻址时存放基地址。 CX是计数暂存器，是重复（REP）前缀指令和LOOP指令的内定寄存器。 DX是资料暂存器，用来放整数除法产生的余数。  IP，SP，BP, IP是存储CPU下次所执行的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg">
+<meta property="article:published_time" content="2022-06-30T12:26:48.208Z">
+<meta property="article:modified_time" content="2022-06-30T12:25:55.212Z">
+<meta property="article:author" content="coke_pwn">
+<meta property="article:tag" content="计算机原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/06/30/%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80%E5%92%8C%E5%AF%B9%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%80%9D%E8%80%83/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '寄存器和汇编指令基础',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-06-30 20:25:55'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2021/12/31/aSDZHoQfiWcINnA.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">coke_blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">寄存器和汇编指令基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-06-30T12:26:48.208Z" title="发表于 2022-06-30 20:26:48">2022-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-06-30T12:25:55.212Z" title="更新于 2022-06-30 20:25:55">2022-06-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="寄存器和汇编指令基础"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="寄存器和汇编指令基础"><a href="#寄存器和汇编指令基础" class="headerlink" title="寄存器和汇编指令基础"></a>寄存器和汇编指令基础</h1><h2 id="0X1寄存器"><a href="#0X1寄存器" class="headerlink" title="0X1寄存器"></a>0X1寄存器</h2><blockquote>
+<p> 通用寄存器</p>
+</blockquote>
+<ol>
+<li><p><strong>AX，BX，CX，DX</strong></p>
+<p>AX是累积寄存器，相对于其他寄存器，在运算方面比较常用，是很多加法乘法指令的缺省寄存器。</p>
+<p>BX是基地暂存器，作为内存偏移指针使用，在内存寻址时存放基地址。</p>
+<p>CX是计数暂存器，是重复（REP）前缀指令和LOOP指令的内定寄存器。</p>
+<p>DX是资料暂存器，用来放整数除法产生的余数。</p>
+</li>
+<li><p><strong>IP，SP，BP,</strong></p>
+<p>IP是存储CPU下次所执行的指令地址（存放指令偏移地址）。</p>
+<p>SP是指针的寄存器，用于堆栈操作。被形象地称为栈顶指针。</p>
+<p>BP是基址指针，一般指向当前栈帧的栈底地址。</p>
+<p>他经常被称为高级语言函数调用的“框架指针”，在逆向的时候，经常可以看见一个标准的函数起始代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push ebp ;保存当前ebp</span><br><span class="line">mov ebp,esp;EBP设为当前栈帧的栈底指针</span><br><span class="line">sub esp , n ;预留n个字节给函数临时变量</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>SI，DI</strong></p>
+<p>SI和DI是变址寄存器。</p>
+<p>SI是源变址寄存器，在内存操作指令中作为“源地址指针”使用。</p>
+<p>DI是目的变址寄存器，在内存操作指令中作为“目的地址”使用。</p>
+</li>
+<li><p><strong>R8~R15</strong></p>
+<p>内容不详，暂时还用不到这些知识，才疏学浅，要是有大佬愿意补充的话，感激不尽。</p>
+</li>
+</ol>
+<blockquote>
+<p>标志寄存器</p>
+</blockquote>
+<p><strong>PFLAGES寄存器包含一系列的状态为位（或者标志）</strong>处理器使用这些位（或者标志）来表示算术，逻辑或者比较操作的结果。他还包含一些主要由操作系统使用的控制位。这些标志位会影响条件跳转指令是否跳转。</p>
+<p>以下是RFLAGS寄存器中位的组织结构。</p>
+<table>
+<thead>
+<tr>
+<th>位的位置</th>
+<th>名称</th>
+<th>符号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>进位标志(Carry Flag)</td>
+<td>CF</td>
+</tr>
+<tr>
+<td>1</td>
+<td>保留</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>奇偶校验标志(Rarity Flag)</td>
+<td>PF</td>
+</tr>
+<tr>
+<td>3</td>
+<td>保留</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>辅助进位标志(Auxiliary Carry Flag )</td>
+<td>AF</td>
+</tr>
+<tr>
+<td>5</td>
+<td>保留</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>零标志(Zero Flag)</td>
+<td>ZF</td>
+</tr>
+<tr>
+<td>7</td>
+<td>符号标志(Sign Flag)</td>
+<td>SF</td>
+</tr>
+<tr>
+<td>8</td>
+<td>陷阱标志(Trap Flag)</td>
+<td>TF</td>
+</tr>
+<tr>
+<td>9</td>
+<td>中断启用标志(Interrupt Enable Flag)</td>
+<td>IF</td>
+</tr>
+<tr>
+<td>10</td>
+<td>方向标志(Direction Flag)</td>
+<td>DF</td>
+</tr>
+<tr>
+<td>11</td>
+<td>溢出标志(Overflow Flag)</td>
+<td>OF</td>
+</tr>
+<tr>
+<td>21</td>
+<td>ID标志</td>
+<td>ID</td>
+</tr>
+</tbody></table>
+<p><strong>标志寄存器对于电脑的用处特别大，很多指令的执行都是依靠标志寄存器</strong></p>
+<p>11位到21位中除了15位保留了，其他的都有含义，我才疏学浅并不能理解，这里就不放上去了。</p>
+<p><strong>PS:对于一些寄存器前面的E或者R都是表示额外附加，EAX表示32位的寄存器，RAX表示64位的寄存器，其他的寄存器同理</strong></p>
+<h2 id="0x2汇编基础指令"><a href="#0x2汇编基础指令" class="headerlink" title="0x2汇编基础指令"></a>0x2汇编基础指令</h2><blockquote>
+<p>通用数据传送指令</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>功能</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mov</td>
+<td>传送赋值</td>
+<td>mov a，b将b的值赋值给a</td>
+</tr>
+<tr>
+<td>push</td>
+<td>压栈</td>
+<td>当前栈帧的栈顶减4，然后将数据压入当前栈帧。</td>
+</tr>
+<tr>
+<td>pop</td>
+<td>出栈</td>
+<td>将当前栈顶（SP)</td>
+</tr>
+<tr>
+<td>xchg</td>
+<td>交换</td>
+<td>交换两个寄存器或者寄存器和地址的值，但不能是两内存。</td>
+</tr>
+</tbody></table>
+<p>这里面的指令用得比较多，后面我会对push和pop对栈区的作用进行演示</p>
+<blockquote>
+<p>标志寄存器传送指令</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>功能</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pushf</td>
+<td>标志进栈</td>
+<td>push the flag</td>
+</tr>
+<tr>
+<td>popf</td>
+<td>标志出栈</td>
+<td>pop the flag</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>条件跳转（一般配合CMP使用）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>指令英文全拼</th>
+<th>功能</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>jmp</td>
+<td>jump</td>
+<td>无条件跳转</td>
+<td>强制跳转</td>
+</tr>
+<tr>
+<td>jz/je</td>
+<td>jump if zero,or equal</td>
+<td>结果为0（相等）跳转</td>
+<td>检测Z位</td>
+</tr>
+<tr>
+<td>jnz/jne</td>
+<td>jump if not zero,or not equal</td>
+<td>结果不为0（不相等）跳转</td>
+<td>检测Z位</td>
+</tr>
+<tr>
+<td>js</td>
+<td>jump if  sign</td>
+<td>结果为负跳转</td>
+<td>检测S位</td>
+</tr>
+<tr>
+<td>jns</td>
+<td>jump if not sign</td>
+<td>结果为正跳转</td>
+<td>检测S位</td>
+</tr>
+<tr>
+<td>jb</td>
+<td>jump if below</td>
+<td>比较小于跳转</td>
+<td>检测C位</td>
+</tr>
+<tr>
+<td>jnb</td>
+<td>jump if not below</td>
+<td>比较大于或等于跳转</td>
+<td>检测C位</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>子程序</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>指令英文全拼</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>call</td>
+<td>CALL</td>
+<td>调用子程序或者函数，CALL 指令将其返回地址压入堆栈，再把被调用过程的地址复制到指令指针寄存器</td>
+</tr>
+<tr>
+<td>ret</td>
+<td>return</td>
+<td>相当于POP eip 将当前栈帧的栈顶的值赋给eip寄存器，然后esp+4</td>
+</tr>
+<tr>
+<td>leave</td>
+<td>leave</td>
+<td>mov esp,ebp     然后再 pop ebp。相当与恢复调用函数前的栈帧</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>循环指令</p>
+</blockquote>
+<p>LOOP loop</p>
+<blockquote>
+<p>算数指令</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>add</td>
+<td>加法</td>
+</tr>
+<tr>
+<td>sub   subr</td>
+<td>减法</td>
+</tr>
+<tr>
+<td>mul</td>
+<td>乘法</td>
+</tr>
+<tr>
+<td>div     divr</td>
+<td>除法</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>比较指令</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>cmp</td>
+<td>cmp  a，b 比较a和b是否相等</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>空指令</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nop</td>
+<td>这个指令在汇编中的作用是空指令，意味着什么都不做的意思，一般用来控制CPU的时间周期，达到时钟延时的效果</td>
+</tr>
+</tbody></table>
+<h2 id="0x3关于栈区的演示"><a href="#0x3关于栈区的演示" class="headerlink" title="0x3关于栈区的演示"></a>0x3关于栈区的演示</h2><blockquote>
+<p> 首先，高级语言的栈是由高地址向低地址增长的，代码在低地址，栈区在高地址。这样会向中间增长。</p>
+</blockquote>
+<ol>
+<li><p>sp永远指向栈顶元素。不是指向没有数据的空地址。</p>
+<p>push时，先减四后赋值</p>
+<p>ebp永远指向栈底元素。他一般存储了上一个函数的ebp。</p>
+</li>
+<li><p>进入函数中，先push ebp</p>
+<p>再mov ebp,esp 这时俩寄存器都指向保存的上个函数的ebp的值。</p>
+<p>下面esp减去一大块，为临时变量流出空间。</p>
+</li>
+<li><p>离开函数时执行leave时</p>
+<p>他的作用与上面的相反，相当于</p>
+<p>mov esp,ebp 让esp指向当前的栈底</p>
+<p>pop ebp 将栈顶(esp指向的内存)的值给ebp这样，就恢复了上个函数调用此函数至少得值，esp因为弹栈而加四，然后指向的是返回地址。</p>
+</li>
+<li><p>随后执行ret，ret指令相当于</p>
+<p>pop eip 即将栈顶的值(esp指向的内容)复制给eip指令寄存器。esp+4</p>
+</li>
+</ol>
+<blockquote>
+<p>系统栈栈底和栈帧栈底</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.首先应该明白，栈是从高地址向低地址延伸的。</span><br><span class="line">2.每个函数的每次调用，都有它自己独立的一个栈帧，这个栈帧中维持着所需要的各种信息</span><br><span class="line">3.寄存器ebp指向当前的栈帧的底部（高地址），寄存器esp指向当前的栈帧的顶部(低地址)</span><br><span class="line">4.注意：EBP指向当前位于系统栈最上边一个栈帧的底部，而不是系统栈的底部。</span><br><span class="line">5.严格说来，“栈帧底部”和“栈底”是不同的概念;</span><br><span class="line">6.ESP所指的栈帧顶部和系统栈的顶部是同一个位置。</span><br></pre></td></tr></table></figure>
+
+<p>像下面的图是栈帧和系统栈的关系。</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220304212511289.png" alt="image-20220304212511289"><br>百度百科中也提到栈帧是对应着未完成的函数，比如我运行main函数里面调用了其他函数，那么就是栈帧1（也就是main)跳到栈帧2，如果这个函数里再嵌套进其它函数，那么就继续往下开栈帧。</p>
+<p>而并列的函数比如main里有两个函数的话栈ebp是不会变的，只是把esp放出去再“收”回来罢了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">coke_pwn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/06/30/%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80%E5%92%8C%E5%AF%B9%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%80%9D%E8%80%83/">http://example.com/2022/06/30/%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80%E5%92%8C%E5%AF%B9%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%80%9D%E8%80%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">coke_blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/">计算机原理</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/06/30/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/"><img class="prev-cover" src="https://s2.loli.net/2022/04/27/J8Yuj9oVdWpScDH.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">系统调用</div></div></a></div><div class="next-post pull-right"><a href="/2022/06/30/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94%E7%8E%8B%E7%88%BD%E7%89%88%E6%80%BB%E7%BB%93/"><img class="next-cover" src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">汇编语言——王爽版总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/06/30/CTF%E7%AB%9E%E8%B5%9B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B9%8B%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="CTF竞赛权威指南之汇编基础的学习"><img class="cover" src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">CTF竞赛权威指南之汇编基础的学习</div></div></a></div><div><a href="/2022/06/30/GOT%E8%A1%A8%E5%92%8CPLT%E8%A1%A8%E6%B5%85%E8%A7%A3/" title="动态链接"><img class="cover" src="https://s2.loli.net/2022/04/27/J8Yuj9oVdWpScDH.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">动态链接</div></div></a></div><div><a href="/2022/06/30/LINUX%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/" title="LINUX保护机制"><img class="cover" src="https://s2.loli.net/2022/04/27/UcmFwXj9zJ4eRob.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">LINUX保护机制</div></div></a></div><div><a href="/2022/06/30/PWN%E2%80%94%E2%80%94GCC%E7%BC%96%E8%AF%91%E4%B8%AD%E5%87%A0%E7%A7%8D%E4%BF%9D%E6%8A%A4%E6%89%93%E5%BC%80%E5%92%8C%E5%85%B3%E9%97%AD%E7%9A%84%E5%8F%82%E6%95%B0/" title="PWN——GCC编译中几种保护打开和关闭的参数"><img class="cover" src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">PWN——GCC编译中几种保护打开和关闭的参数</div></div></a></div><div><a href="/2022/06/30/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94%E7%8E%8B%E7%88%BD%E7%89%88%E6%80%BB%E7%BB%93/" title="汇编语言——王爽版总结"><img class="cover" src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">汇编语言——王爽版总结</div></div></a></div><div><a href="/2022/06/30/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" title="系统调用"><img class="cover" src="https://s2.loli.net/2022/04/27/J8Yuj9oVdWpScDH.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-30</div><div class="title">系统调用</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s2.loli.net/2021/12/31/aSDZHoQfiWcINnA.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">coke_pwn</div><div class="author-info__description">一物不知，深以为耻</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/coke-pwn"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/rang-wo-kan-kan" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:2269279877@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客,我娇贵的CTFer</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">寄存器和汇编指令基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X1%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.1.</span> <span class="toc-text">0X1寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E6%8C%87%E4%BB%A4"><span class="toc-number">1.2.</span> <span class="toc-text">0x2汇编基础指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3%E5%85%B3%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%BC%94%E7%A4%BA"><span class="toc-number">1.3.</span> <span class="toc-text">0x3关于栈区的演示</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/CTF%E7%AB%9E%E8%B5%9B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B9%8B%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="CTF竞赛权威指南之汇编基础的学习"><img src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CTF竞赛权威指南之汇编基础的学习"/></a><div class="content"><a class="title" href="/2022/06/30/CTF%E7%AB%9E%E8%B5%9B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E4%B9%8B%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="CTF竞赛权威指南之汇编基础的学习">CTF竞赛权威指南之汇编基础的学习</a><time datetime="2022-06-30T12:26:48.216Z" title="发表于 2022-06-30 20:26:48">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" title="系统调用"><img src="https://s2.loli.net/2022/04/27/J8Yuj9oVdWpScDH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="系统调用"/></a><div class="content"><a class="title" href="/2022/06/30/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" title="系统调用">系统调用</a><time datetime="2022-06-30T12:26:48.212Z" title="发表于 2022-06-30 20:26:48">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80%E5%92%8C%E5%AF%B9%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%80%9D%E8%80%83/" title="寄存器和汇编指令基础"><img src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="寄存器和汇编指令基础"/></a><div class="content"><a class="title" href="/2022/06/30/%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80%E5%92%8C%E5%AF%B9%E4%BA%8E%E6%A0%88%E5%8C%BA%E7%9A%84%E6%80%9D%E8%80%83/" title="寄存器和汇编指令基础">寄存器和汇编指令基础</a><time datetime="2022-06-30T12:26:48.208Z" title="发表于 2022-06-30 20:26:48">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94%E7%8E%8B%E7%88%BD%E7%89%88%E6%80%BB%E7%BB%93/" title="汇编语言——王爽版总结"><img src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="汇编语言——王爽版总结"/></a><div class="content"><a class="title" href="/2022/06/30/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94%E7%8E%8B%E7%88%BD%E7%89%88%E6%80%BB%E7%BB%93/" title="汇编语言——王爽版总结">汇编语言——王爽版总结</a><time datetime="2022-06-30T12:26:48.204Z" title="发表于 2022-06-30 20:26:48">2022-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/06/30/PWN%E2%80%94%E2%80%94GCC%E7%BC%96%E8%AF%91%E4%B8%AD%E5%87%A0%E7%A7%8D%E4%BF%9D%E6%8A%A4%E6%89%93%E5%BC%80%E5%92%8C%E5%85%B3%E9%97%AD%E7%9A%84%E5%8F%82%E6%95%B0/" title="PWN——GCC编译中几种保护打开和关闭的参数"><img src="https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PWN——GCC编译中几种保护打开和关闭的参数"/></a><div class="content"><a class="title" href="/2022/06/30/PWN%E2%80%94%E2%80%94GCC%E7%BC%96%E8%AF%91%E4%B8%AD%E5%87%A0%E7%A7%8D%E4%BF%9D%E6%8A%A4%E6%89%93%E5%BC%80%E5%92%8C%E5%85%B3%E9%97%AD%E7%9A%84%E5%8F%82%E6%95%B0/" title="PWN——GCC编译中几种保护打开和关闭的参数">PWN——GCC编译中几种保护打开和关闭的参数</a><time datetime="2022-06-30T12:26:48.200Z" title="发表于 2022-06-30 20:26:48">2022-06-30</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s2.loli.net/2022/04/27/WgjmK4EG8cFq9iB.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By coke_pwn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://rang-wo-kan-kan.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
